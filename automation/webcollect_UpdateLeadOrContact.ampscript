@@ -3,27 +3,27 @@
     Platform.Load("core","1.1.1");
     
     /***************************
-	 * GLOBAL VARIABLES
-	 ***************************/
+     * GLOBAL VARIABLES
+     ***************************/
     var today = new Date();
     var startMS = today.getTime();
-    var endMS = startMS + 1200000; // ends in 20 minutes	 
+    var endMS = startMS + 1200000; // ends in 20 minutes     
     
-	var deName = "IGO_PROFILES";
-	var deExtId = "IGO_PROFILES";
-	
-	var opening = '%'+'%[';
-	var closing = ']%'+'%';
-	
-	/***************************
-	 * MAIN FUNCTION
-	 ***************************/
-	 
-	var filter = {Property:"Object",SimpleOperator:"isNull"};
-	var dataRows = getDataRows(deExtId, filter);
-	processDataRows(dataRows);
+    var deName = "IGO_PROFILES";
+    var deExtId = "IGO_PROFILES";
+    
+    var opening = '%'+'%[';
+    var closing = ']%'+'%';
+    
+    /***************************
+     * MAIN FUNCTION
+     ***************************/
+     
+    var filter = {Property:"Object",SimpleOperator:"isNull"};
+    var dataRows = getDataRows(deExtId, filter);
+    processDataRows(dataRows);
 
-	var filter = {
+    var filter = {
         LeftOperand:{
             Property:"Object",
             SimpleOperator:"notEquals",
@@ -44,57 +44,57 @@
             }
         }
     };
-	dataRows = getDataRows(deExtId, filter);
-	processDataRows(dataRows);
-	
-	/***************************
-	 * METHODS
-	 ***************************/
-	
-	function getDataRows(deExtId, filter) {
-		var de = DataExtension.Init(deExtId);
-		return de.Rows.Retrieve(filter);
-	}
-	
-	function processDataRows(dataRows) {
-		if (dataRows && dataRows.length > 0) {
-			var amp;
-			var sfdcId;
-			var sfdcObject;
-	
-			for(var i=0; i<dataRows.length; i++) {
+    dataRows = getDataRows(deExtId, filter);
+    processDataRows(dataRows);
+    
+    /***************************
+     * METHODS
+     ***************************/
+    
+    function getDataRows(deExtId, filter) {
+        var de = DataExtension.Init(deExtId);
+        return de.Rows.Retrieve(filter);
+    }
+    
+    function processDataRows(dataRows) {
+        if (dataRows && dataRows.length > 0) {
+            var amp;
+            var sfdcId;
+            var sfdcObject;
+    
+            for(var i=0; i<dataRows.length; i++) {
                 var now = new Date();
                 var nowMS = now.getTime();
-                if(nowMS >= endMS) break;			
-			    try {	
-			        sfdcId = '';
-					sfdcId = findAndUpdateContact(dataRows[i]["email"]);
-					sfdcObject = 'Contact';
-					if(!sfdcId) {
-						sfdcId = findAndUpdateLead(dataRows[i]["email"]);
-						sfdcObject = 'Lead';
-					}
-					if(sfdcId) {
-    					Platform.Function.UpdateDE( deName, 
-    												["user_id", "email"],
-    												[dataRows[i]["user_id"], dataRows[i]["email"]],
-    												["Object", "UniqueId"],
-    												[sfdcObject, sfdcId]
-    											  );
-					}
-				} catch (err) {
-			    } //end try-catch
-			} // end for
-		} //end if
-	}
+                if(nowMS >= endMS) break;            
+                try {    
+                    sfdcId = '';
+                    sfdcId = findAndUpdateContact(dataRows[i]["email"]);
+                    sfdcObject = 'Contact';
+                    if(!sfdcId) {
+                        sfdcId = findAndUpdateLead(dataRows[i]["email"]);
+                        sfdcObject = 'Lead';
+                    }
+                    if(sfdcId) {
+                        Platform.Function.UpdateDE( deName, 
+                                                    ["user_id", "email"],
+                                                    [dataRows[i]["user_id"], dataRows[i]["email"]],
+                                                    ["Object", "UniqueId"],
+                                                    [sfdcObject, sfdcId]
+                                                  );
+                    }
+                } catch (err) {
+                } //end try-catch
+            } // end for
+        } //end if
+    }
 
-	
-	function findAndUpdateContact(email) {
-		/* TODO */
-	}
-	
-	function findAndUpdateLead(email) {
-		/* TODO */
-	}
+    
+    function findAndUpdateContact(email) {
+        /* TODO */
+    }
+    
+    function findAndUpdateLead(email) {
+        /* TODO */
+    }
     
 </script>
